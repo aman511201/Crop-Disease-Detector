@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  agroscan:
+    build: .
+    image: agroscan-ai:latest
+    container_name: agroscan-crop-detector
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    restart: unless-stopped
