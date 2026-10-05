@@ -1,4 +1,4 @@
-# AgroScan AI - Dockerfile for Google Cloud Run & Container Deployments
+# AgroScan AI - Production Dockerfile for Google Cloud Run
 FROM python:3.11-slim
 
 # Prevent Python from writing .pyc files and enable unbuffered logging
@@ -14,18 +14,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Install PyTorch CPU first to leverage Docker layer caching
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
-
-# Copy requirements and install remaining dependencies
+# Copy requirements and install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy application source code
 COPY . .
 
-# Expose target port
+# Expose target port for Cloud Run
 EXPOSE 8080
 
 # Production WSGI server command for Google Cloud Run
