@@ -25,5 +25,5 @@ COPY . .
 # Expose target port for Cloud Run
 EXPOSE 8080
 
-# Production WSGI server command for Google Cloud Run
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 120 app:app
+# Production WSGI server command compatible with Cloud Run, Render, Railway, and Hugging Face
+CMD ["sh", "-c", "exec gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 1 --threads 8 --timeout 120 app:app"]

@@ -2,6 +2,8 @@
 
 > An AI-powered agricultural diagnostic application for instant crop leaf disease detection, physical lesion segmentation, confidence rating, organic & chemical treatments, and long-term prevention advice.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/aman511201/Crop-Disease-Detector)
+
 ---
 
 ## 🌟 Key Features
@@ -172,3 +174,33 @@ Run the test suite to verify model inference, lesion segmentation, and sample di
 ```bash
 python test_classifier.py
 ```
+
+---
+
+## ☁️ Deployment Guide
+
+### Option 1: 1-Click Free Deployment on Render (Recommended)
+1. Click the badge: [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/aman511201/Crop-Disease-Detector)
+2. Sign in with GitHub on [Render](https://render.com).
+3. Click **Apply / Create Web Service**. Render builds the Docker container automatically and gives you a free live URL (e.g. `https://crop-disease-detector.onrender.com`).
+
+### Option 2: Google Cloud Run via Cloud Shell (No local installation needed)
+If you don't have `gcloud` installed locally:
+1. Open [Google Cloud Shell](https://shell.cloud.google.com).
+2. Clone and deploy directly:
+   ```bash
+   git clone https://github.com/aman511201/Crop-Disease-Detector.git
+   cd Crop-Disease-Detector
+   gcloud run deploy crop-disease-detector \
+       --source . \
+       --region us-central1 \
+       --allow-unauthenticated \
+       --memory 2Gi \
+       --cpu 2
+   ```
+3. Cloud Shell will output your live HTTPS URL.
+
+### Option 3: Hugging Face Spaces (Free CPU Docker Space)
+1. Go to [huggingface.co/new-space](https://huggingface.co/new-space).
+2. Choose **Docker** as Space SDK.
+3. Push or connect this repository.

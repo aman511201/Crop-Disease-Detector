@@ -1,30 +1,40 @@
 #!/usr/bin/env bash
 # =========================================================================
-#  AgroScan AI - Google Cloud Run Deployment Script (Bash / Cloud Shell)
+#  AgroScan AI - Google Cloud Run 1-Click Deployment Script
 # =========================================================================
+
 set -e
 
-PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
-if [ -z "$PROJECT_ID" ]; then
-    echo "Please set your Google Cloud project first:"
-    echo "gcloud config set project YOUR_PROJECT_ID"
+echo "============================================================="
+echo " AgroScan AI - Deploying Crop Disease Detector to Cloud Run"
+echo "============================================================="
+
+if ! command -v gcloud &> /dev/null; then
+    echo "[NOTE] gcloud CLI not found."
+    echo "Tip: Run this directly in Google Cloud Shell (https://shell.cloud.google.com):"
+    echo "  gcloud run deploy crop-disease-detector --source . --region us-central1 --allow-unauthenticated"
     exit 1
 fi
 
-echo "Deploying AgroScan AI to Google Cloud Project: $PROJECT_ID"
+GCP_PROJECT=$(gcloud config get-value project 2>/dev/null || true)
+if [ -z "$GCP_PROJECT" ] || [ "$GCP_PROJECT" = "(unset)" ]; then
+    read -p "Enter your Google Cloud Project ID: " GCP_PROJECT
+fi
 
-# Enable required Google Cloud services
-echo "Enabling Cloud Run, Cloud Build, and Container Registry APIs..."
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com containerregistry.googleapis.com
+if [ -z "$GCP_PROJECT" ]; then
+    echo "[ERROR] Project ID is required."
+    exit 1
+fi
 
-# Build container on Google Cloud
-echo "Building container with Cloud Build..."
-gcloud builds submit --tag gcr.io/"$PROJECT_ID"/crop-disease-detector
+echo "Active Project: $GCP_PROJECT"
+echo ""
+echo "Step 1: Submitting build to Google Cloud Build..."
+gcloud builds submit --tag "gcr.io/$GCP_PROJECT/crop-disease-detector"
 
-# Deploy to Cloud Run
-echo "Deploying to Cloud Run..."
+echo ""
+echo "Step 2: Deploying container to Cloud Run..."
 gcloud run deploy crop-disease-detector \
-    --image gcr.io/"$PROJECT_ID"/crop-disease-detector \
+    --image "gcr.io/$GCP_PROJECT/crop-disease-detector" \
     --platform managed \
     --region us-central1 \
     --allow-unauthenticated \
@@ -32,4 +42,5 @@ gcloud run deploy crop-disease-detector \
     --cpu 2 \
     --port 8080
 
-echo "Deployment finished successfully!"
+echo ""
+echo "[DONE] Deployment complete! Your app is live with HTTPS."
